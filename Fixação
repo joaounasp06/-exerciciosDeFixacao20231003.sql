@@ -1,0 +1,61 @@
+1-
+
+
+CREATE FUNCTION total_livros_por_genero(genero VARCHAR) RETURNS INT AS 
+DECLARE
+    total INT;
+BEGIN
+    total := 0;
+    FOR livro IN (SELECT * FROM Livros) LOOP
+        IF livro.genero = genero THEN
+            total := total + 1;
+        END IF;
+    END LOOP;
+    RETURN total;
+END;
+
+2-
+
+
+CREATE FUNCTION listar_livros_por_autor(first_name VARCHAR, last_name VARCHAR) RETURNS TABLE (titulo VARCHAR) AS 
+BEGIN
+    SELECT livro.titulo
+    FROM Livro_Autor, Livro
+    WHERE autor.first_name = first_name AND autor.last_name = last_name;
+END;
+
+3-
+
+CREATE FUNCTION atualizar_resumos() RETURNS VOID AS 
+BEGIN
+    UPDATE Livro
+    SET resumo = resumo + 'Este é um excelente livro!';
+END;
+
+4-
+
+
+CREATE FUNCTION media_livros_por_editora() RETURNS FLOAT AS
+    total_livros INT := 0;
+    total_editoras INT := 0;
+BEGIN
+    SELECT COUNT(*) INTO total_editoras FROM Editora;
+    SELECT COUNT(*) INTO total_livros FROM Livro;
+    RETURN total_livros / total_editoras;
+END;
+
+5-
+
+
+CREATE FUNCTION autores_sem_livros() RETURNS TABLE (first_name VARCHAR, last_name VARCHAR) 
+BEGIN
+    SELECT autor.first_name, autor.last_name
+    FROM Autor
+    LEFT JOIN Livro_Autor ON Autor.id = Livro_Autor.id
+    WHERE Livro_Autor.id IS NULL;
+END;
+
+
+
+
+
